@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "griptape-chat"
+version = "0.1.0"
+description = "Chat demo using the Griptape Framework and Gradio."
+authors = ["Griptape <hello@griptape.ai>"]
+license = "Apache 2.0"
+readme = "README.md"
+repository = "https://github.com/griptape-ai/griptape-chat"
+
+packages = [
+    {include = "griptape"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+gradio = "^3.36.1"
+griptape = "^0.13.0"
+griptape-tools = "^0.15.1"
+attrs = "^23.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
