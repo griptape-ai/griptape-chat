@@ -4,8 +4,8 @@ import gradio as gr
 from dotenv import load_dotenv
 from griptape.chat_demo import Chat
 
-port = os.getenv("GRADIO_PORT", 7860)
 load_dotenv()
+port = os.getenv("GRADIO_PORT", 7860)
 chat = Chat()
 
 
