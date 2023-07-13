@@ -1,8 +1,11 @@
+import os
 import time
 import gradio as gr
+from dotenv import load_dotenv
 from griptape.chat_demo import Chat
 
-
+port = os.getenv("GRADIO_PORT", 7860)
+load_dotenv()
 chat = Chat()
 
 
@@ -47,5 +50,5 @@ with gr.Blocks() as demo:
                 bot, chatbot, chatbot
             )
 
-demo.queue()
-demo.launch()
+    demo.queue()
+    demo.launch(server_name='0.0.0.0', server_port=int(port))
