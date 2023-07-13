@@ -1,0 +1,30 @@
+# Ignore Python bytecode:
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyc.so
+
+# Ignore test and docs:
+/tests
+/docs
+
+# Ignore git files:
+.git
+.gitignore
+
+# Ignore all log files
+*.log
+
+# Ignore all .env files
+*.env
+
+# Ignore OS generated files:
+.DS_Store
+Thumbs.db
+
+# Ignore cache and build files:
+*.egg-info/
+dist/
+cache/
+build/
