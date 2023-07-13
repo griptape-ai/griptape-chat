@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  griptape-chat:
+    build: .
+    environment:
+      - GRADIO_PORT=${GRADIO_PORT}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "${GRADIO_PORT}:${GRADIO_PORT}"
