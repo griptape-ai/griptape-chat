@@ -4,7 +4,7 @@ The demo uses [Gradio](https://www.gradio.app/) for the frontend and [Griptape](
 
 ## Get the code
 ```shell
-git pull git@github.com:griptape-ai/griptape-chat.git
+git clone git@github.com:griptape-ai/griptape-chat.git
 cd griptape-chat
 ```
 
