@@ -19,6 +19,9 @@ __pycache__
 # Ignore all .env files
 *.env
 
+# Ignore .venv
+*.venv
+
 # Ignore OS generated files:
 .DS_Store
 Thumbs.db
