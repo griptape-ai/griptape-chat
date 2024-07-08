@@ -26,31 +26,6 @@ def bot(history):
 
         yield history
 
+demo = gr.ChatInterface(fn=chat.send_message, examples=["What did EDB release in Q2", "Why is Postgres better than Aurora"], title="Knowledge Base Search Bot")
 
-with gr.Blocks() as demo:
-    with gr.Row():
-        with gr.Column(scale=1):
-            gr.Label("Griptape PDF Chat", show_label=False)
-            gr.Text(
-                "Before using chat, do the following:\n\n1. Make the OpenAI API token available via an environment "
-                "variable OPENAI_API_KEY\n2. Upload a PDF file that you'd like to chat with",
-                show_label=False
-            )
-            file_output = gr.File()
-            upload_btn = gr.UploadButton(
-                variant="primary",
-                file_types=[".pdf"],
-                file_count="single"
-            )
-        with gr.Column(scale=3):
-            chatbot = gr.Chatbot(show_label=False)
-            msg_textbox = gr.Textbox(placeholder="Send a message", show_label=False)
-
-            upload_btn.upload(chat.upload_pdf, upload_btn, file_output)
-
-            msg_textbox.submit(user, [msg_textbox, chatbot], [msg_textbox, chatbot], queue=False).then(
-                bot, chatbot, chatbot
-            )
-#server_name='0.0.0.0', server_port=int(port)
-    demo.queue()
-    demo.launch(share=True)
+demo.launch(share=True)
