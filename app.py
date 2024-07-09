@@ -9,7 +9,7 @@ from griptape.chat_demo import Chat
 load_dotenv()
 port = os.getenv("GRADIO_PORT", 7860)
 chat = Chat()
-
+print('hello')
 
 def user(user_message, history):
     return "", history + [[user_message, None]]
