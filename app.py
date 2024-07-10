@@ -8,10 +8,8 @@ load_dotenv()
 port = os.getenv("GRADIO_PORT", 7860)
 chat = Chat()
 
-
 def user(user_message, history):
     return "", history + [[user_message, None]]
-
 
 def bot(history):
     response = chat.send_message(history[-1][0])
@@ -23,7 +21,6 @@ def bot(history):
         time.sleep(0.005)
 
         yield history
-
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -49,6 +46,5 @@ with gr.Blocks() as demo:
             msg_textbox.submit(user, [msg_textbox, chatbot], [msg_textbox, chatbot], queue=False).then(
                 bot, chatbot, chatbot
             )
-
     demo.queue()
-    demo.launch(server_name='0.0.0.0', server_port=int(port))
+    demo.launch(share=True)
