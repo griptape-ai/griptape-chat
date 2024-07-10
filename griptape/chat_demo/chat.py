@@ -22,7 +22,7 @@ class Chat:
 
     agent: Agent = field(
         default=Factory( 
-            lambda self: self.pdf_interact_w_Agent([]),
+            lambda self: self.pdf_interact_with_Agent([]),
             takes_self=True
         )
     )
@@ -47,12 +47,12 @@ class Chat:
             query_engine=self.vector_query_engine,
             namespace=namespace,
         ) 
-        self.agent = self.pdf_interact_w_Agent(
+        self.agent = self.pdf_interact_with_Agent(
             [vector_store_tool]
         )
         return file.name
 
-    def pdf_interact_w_Agent(self,  tools: list[BaseTool]) -> Agent:
+    def pdf_interact_with_Agent(self,  tools: list[BaseTool]) -> Agent:
         return Agent(
             prompt_driver=OpenAiChatPromptDriver(model="gpt-4o"),
             tools=tools,

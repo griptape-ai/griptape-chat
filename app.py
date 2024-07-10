@@ -8,7 +8,6 @@ load_dotenv()
 port = os.getenv("GRADIO_PORT", 7860)
 chat = Chat()
 
-
 def user(user_message, history):
     return "", history + [[user_message, None]]
 
