@@ -4,8 +4,7 @@ from attr import define, field, Factory
 from typing import Any
 from dotenv import load_dotenv
 
-from griptape.drivers import OpenAiChatPromptDriver,LocalVectorStoreDriver,OpenAiEmbeddingDriver
-from griptape.engines import VectorQueryEngine
+from griptape.drivers import LocalVectorStoreDriver,OpenAiEmbeddingDriver
 from griptape.loaders import PdfLoader
 from griptape.rules import Ruleset, Rule
 from griptape.structures import Agent
@@ -18,7 +17,6 @@ load_dotenv()
 class Chat:
     open_ai_embedding_driver = OpenAiEmbeddingDriver ()
     vector_store_driver= LocalVectorStoreDriver (embedding_driver=open_ai_embedding_driver)
-    open_ai_prompt_driver= OpenAiChatPromptDriver(model="gpt-4o")
 
     agent: Agent = field(
         default=Factory( 
@@ -26,12 +24,6 @@ class Chat:
             takes_self=True
         )
     )
-   
-    vector_query_engine= VectorQueryEngine(
-        prompt_driver=open_ai_prompt_driver,
-        vector_store_driver= vector_store_driver,
-    )
-
     def send_message(self, message: str) -> Any:
         return self.agent.run(message).output.value
     
@@ -39,13 +31,13 @@ class Chat:
         loaded_file= PdfLoader().load(load_file(file.name))
         namespace = os.path.basename(file.name)
         
-        self.vector_query_engine.vector_store_driver.upsert_text_artifacts(
+        self.vector_store_driver.upsert_text_artifacts(
          {namespace: loaded_file}
         )
         vector_store_tool = VectorStoreClient (
             description=f"Contains information about a PDF with name {namespace}.",
-            query_engine=self.vector_query_engine,
-            namespace=namespace,
+            vector_store_driver=self.vector_store_driver,
+            query_params={},
         ) 
         self.agent = self.pdf_interact_with_Agent(
             [vector_store_tool]
@@ -54,7 +46,6 @@ class Chat:
 
     def pdf_interact_with_Agent(self,  tools: list[BaseTool]) -> Agent:
         return Agent(
-            prompt_driver=OpenAiChatPromptDriver(model="gpt-4o"),
             tools=tools,
             rulesets=[Ruleset(
                     name="PDF Chat Assistant",
