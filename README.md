@@ -27,6 +27,10 @@ Once you are logged in, click on the "Personal" text on the top right of your br
 1. Click on "+ Create new secret key" and give it a name.
 1. Copy the key and paste it in the .env file in the root directory of this project. Replacing "your key here" 
 
+### Accessing a Structure From the Cloud
+To use a structure from the cloud, enter the keys in your .env file, the .env.example file serves as an example to copy and paste to your own .env file. 
+- for more information on cloud structures access the [Griptape-CLI] (https://github.com/griptape-ai/griptape-cli)
+- for a simple example of an emulated structure see this simple example of a [Cloud-Agent](https://github.com/alvarodls-gp/griptape-gradio-chatbot-structure)
 
 ## Running the Demo
 
