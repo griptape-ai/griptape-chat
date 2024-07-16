@@ -13,6 +13,7 @@ def user(user_message, history):
 
 def bot(history):
     response = chat.send_message(history[-1][0])
+    print(response)
     history[-1][1] = ""
 
     for character in response:
@@ -41,7 +42,7 @@ with gr.Blocks() as demo:
             chatbot = gr.Chatbot(show_label=False)
             msg_textbox = gr.Textbox(placeholder="Send a message", show_label=False)
 
-            upload_btn.upload(chat.upload_pdf, upload_btn, file_output)
+            upload_btn.upload(chat.upload_pdf,upload_btn, file_output)
 
             msg_textbox.submit(user, [msg_textbox, chatbot], [msg_textbox, chatbot], queue=False).then(
                 bot, chatbot, chatbot
