@@ -4,7 +4,6 @@ from attr import define
 from typing import Any
 from dotenv import load_dotenv
 
-
 from griptape.drivers import OpenAiChatPromptDriver
 from griptape.rules import Ruleset, Rule
 from griptape.structures import Agent
@@ -16,22 +15,39 @@ from griptape.structures import Agent
 from griptape.drivers import BaseVectorStoreDriver, GriptapeCloudKnowledgeBaseVectorStoreDriver
 from griptape.config import AzureOpenAiStructureConfig
 from griptape.tools import VectorStoreClient
+from griptape.tasks import StructureRunTask
+
 
 
 load_dotenv()
 #not sure if this config stuff is neccessary 
+
+#Create an if/else statement for cloud structures/skatepark and local structures 
+
+# For skatepark, is http://127.0.0.1:5000; for cloud is https://cloud.griptape.ai
+
+#HOST = os.environ["GT_CLOUD_BASE_URL"]
+
+# If with skatepark or with the cloud 
+#GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
+
+# For the cloud 
+#GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
+
+# Creates the config/driver to interact with the OpenAI API
 config = OpenAiStructureConfig()
 config.prompt_driver = OpenAiChatPromptDriver(
     model="gpt-4o",
 )
 
-
+# Creates credentials for azure? I'm not sure about this part 
 azure_credential = ClientSecretCredential(
     client_id=os.environ["AZURE_CLIENT_ID"],
     client_secret=os.environ["AZURE_CLIENT_SECRET"],
     tenant_id=os.environ["AZURE_TENANT_ID"],
 )
 
+# Not sure what this part is for- maybe ask? 
 azure_structure_config = AzureOpenAiStructureConfig(
     azure_ad_token_provider=lambda: azure_credential.get_token(
         "https://cognitiveservices.azure.com/.default"
@@ -39,9 +55,11 @@ azure_structure_config = AzureOpenAiStructureConfig(
     azure_endpoint=os.environ["AZURE_OPENAI_DEFAULT_ENDPOINT"],
 )
 
+
     
 @define
 class Chat:
+    # Creates a ruleset for the structure 
     personality_ruleset = Ruleset(
         name="Personality",
         rules=[
@@ -67,14 +85,18 @@ class Chat:
 
     knowledge_base_id = os.environ.get("KNOWLEDGE_BASE_ID")
     gt_cloud_api_key = os.environ.get("GT_CLOUD_API_KEY")
-    gt_cloud_base_url = os.environ.get("GT_CLOUD_BASE_URL", "https://cloud.griptape.ai")
 
+    # Takes cloud base url from the environment variable, if not found, defaults to the cloud url
+    gt_cloud_base_url = os.environ.get("GT_CLOUD_BASE_URL", "https://cloud.griptape.ai")
+    
+    # How do I use the vector store driver in Skatepark or locally 
     vector_store_driver = GriptapeCloudKnowledgeBaseVectorStoreDriver(
         base_url=gt_cloud_base_url,
         api_key=gt_cloud_api_key,
         knowledge_base_id=knowledge_base_id,
     )
 
+    # Output of the query, returns in the form of a ListArtifacts
     def process_query_output_fn(entries: list[BaseVectorStoreDriver.Entry]):
         artifacts = []
         for entry in entries:
@@ -82,6 +104,7 @@ class Chat:
             artifacts.append(artifact)
         return ListArtifact(artifacts)
 
+    # Creates a VectorStore
     vector_store_tool = VectorStoreClient(
         description="Contains a Product Catalog",
         query_params={},
@@ -89,6 +112,7 @@ class Chat:
         process_query_output_fn=process_query_output_fn,
     )
 
+    # Actual structure in this case, using tools, config, and rulesets
     agent: Agent = Agent(
         rulesets=[personality_ruleset, vector_store_client_ruleset],
         tools=[vector_store_tool],
