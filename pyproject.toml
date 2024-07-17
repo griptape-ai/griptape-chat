@@ -1,24 +1,22 @@
 [tool.poetry]
 name = "griptape-chat"
-version = "0.2.0"
+version = "0.27.1"
 description = "Chat demo using the Griptape Framework and Gradio."
 authors = ["Griptape <hello@griptape.ai>"]
 license = "Apache 2.0"
 readme = "README.md"
 repository = "https://github.com/griptape-ai/griptape-chat"
-
-packages = [
-    {include = "griptape"}
-]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
 python-dotenv = "^1.0.0"
 gradio = "^4.37.1"
-griptape = "^0.27.1"
+griptape = {git = "https://github.com/griptape-ai/griptape", branch = "cjkindel/gtc_vector_store_driver"}
 attrs = "^23.1.0"
 pypdf = "^4.2.0"
 pymupdf = "^1.24.7"
+azure-identity = "^1.17.1"
 
 
 
