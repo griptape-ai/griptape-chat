@@ -17,22 +17,10 @@ from griptape.config import AzureOpenAiStructureConfig
 from griptape.tools import VectorStoreClient
 from griptape.tasks import StructureRunTask
 
-
+# I didn't end up modifying this file really -Kate
 
 load_dotenv()
 #not sure if this config stuff is neccessary 
-
-#Create an if/else statement for cloud structures/skatepark and local structures 
-
-# For skatepark, is http://127.0.0.1:5000; for cloud is https://cloud.griptape.ai
-
-#HOST = os.environ["GT_CLOUD_BASE_URL"]
-
-# If with skatepark or with the cloud 
-#GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
-
-# For the cloud 
-#GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
 # Creates the config/driver to interact with the OpenAI API
 config = OpenAiStructureConfig()

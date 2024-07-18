@@ -23,22 +23,7 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
 
-#@define
-#class Chat_Skatepark:
-#    struct_run_task: StructureRunTask = field(
-#        default=Factory(
-#            lambda: StructureRunTask(
-#                driver=OpenAiChatPromptDriver(model="gpt-4o", temperature=0.3)
-#            )
-#        ),
-#        kw_only=True,
-#    )
-
-#    def send_message(self, message: str, history) -> Any:
-#        self.struct_run_task.input = (message,)
-#        return self.struct_run_task.run().value
-
-
+# Local agent (a little silly) that I defined to test the Gradio app
 def build_agent():
     return Agent(
         rules=[
@@ -51,6 +36,7 @@ def build_agent():
         ]
     )
 
+# Used this class in order to run GriptapeCloud and Skatepark. 
 @define
 class Chat_Cloud:
     struct_run_task: StructureRunTask = field(
@@ -70,6 +56,7 @@ class Chat_Cloud:
         self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
     
+# Used this class in order to run the local agent that I defined above.
 @define
 class Chat_Local:
     struct_run_task: StructureRunTask = field(

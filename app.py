@@ -13,10 +13,13 @@ load_dotenv()
 # Get the port from the environment variables for Gradio
 port = os.getenv("GRADIO_PORT", 7860)
 
-# Chat from the chat.py file created in the griptape/chat_demo folder
+# Chat from the chat.py file created in the griptape/chat_demo folder (CJ's chatbot)
 #chat = Chat()
 
+# Chat from the chat_cloud.py file created in the griptape/chat_cloud folder for cloud and Skatepark
 #chat = Chat_Cloud()
+
+# Chat from the chat_cloud.py file created in the griptape/chat_cloud folder for local agent
 chat = Chat_Local()
 
 
@@ -36,5 +39,6 @@ def bot(history):
 
 #demo = gr.ChatInterface(fn=chat.send_message, examples=["What did EDB release in Q2", "Why is Postgres better than Aurora"], title="Knowledge Base Search Bot")
 
+# Launch the chat interface
 demo = gr.ChatInterface(fn=chat.send_message)
 demo.launch(share=True)
