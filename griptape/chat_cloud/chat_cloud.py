@@ -36,7 +36,7 @@ def build_agent():
         ]
     )
 
-# Used this class in order to run GriptapeCloud and Skatepark. 
+# Used this class in order to run GriptapeCloud and Skatepark. (Skatepark with structures in GripMSRepo, GriptapeCloud with structures defined in cloud)
 @define
 class Chat_Cloud:
     struct_run_task: StructureRunTask = field(
