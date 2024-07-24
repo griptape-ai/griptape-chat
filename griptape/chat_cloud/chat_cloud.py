@@ -2,6 +2,8 @@ import os
 from attr import define, field, Factory
 from typing import Any
 from dotenv import load_dotenv
+import requests
+import urllib3 #Importing this for HTTP?? 
 
 from griptape.structures import Agent
 from griptape.rules import Rule
@@ -13,6 +15,9 @@ from griptape.tasks import StructureRunTask
 #Load all environment variables 
 load_dotenv()
 
+# Gets the lambda endpoint from the .env file
+#lambda_endpoint = os.environ["LAMBDA_ENDPOINT"]
+
 # Get host
 HOST = os.environ["GT_CLOUD_BASE_URL"]
 
@@ -21,6 +26,8 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 
 # For the cloud 
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
+
+#Should I add Session logic in here? or in the structure? 
 
 
 # Local agent (a little silly) that I defined to test the Gradio app
@@ -36,7 +43,9 @@ def build_agent():
         ]
     )
 
+
 # Used this class in order to run GriptapeCloud and Skatepark. (Skatepark with structures in GripMSRepo, GriptapeCloud with structures defined in cloud)
+# Need to make sure structure init is called. 
 @define
 class Chat_Cloud:
     struct_run_task: StructureRunTask = field(
@@ -53,7 +62,7 @@ class Chat_Cloud:
     )
 
     def send_message(self, message: str, history) -> Any:
-        self.struct_run_task.input = (message,)
+        self.struct_run_task.input = (message,) # is this correct? 
         return self.struct_run_task.run().value
     
 # Used this class in order to run the local agent that I defined above.
@@ -72,3 +81,4 @@ class Chat_Local:
     def send_message(self, message: str, history) -> Any:
         self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
+
