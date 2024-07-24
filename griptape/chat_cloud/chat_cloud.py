@@ -2,7 +2,9 @@ import os
 from attr import define, field, Factory
 from typing import Any
 from dotenv import load_dotenv
-import requests
+import boto3
+from uuid import uuid4 as uuid
+import json
 import urllib3 #Importing this for HTTP?? 
 
 from griptape.structures import Agent
@@ -26,8 +28,6 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 
 # For the cloud 
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
-
-#Should I add Session logic in here? or in the structure? 
 
 
 # Local agent (a little silly) that I defined to test the Gradio app
@@ -61,8 +61,15 @@ class Chat_Cloud:
         kw_only=True,
     )
 
-    def send_message(self, message: str, history) -> Any:
-        self.struct_run_task.input = (message,) # is this correct? 
+    def send_message(self, message: str, history, session_id:str = None) -> Any:
+        if session_id:
+            args = {
+                "input": message,
+                "session_id": session_id
+            }
+            self.struct_run_task.input = [json.dumps(args)]
+        else: 
+            self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
     
 # Used this class in order to run the local agent that I defined above.
