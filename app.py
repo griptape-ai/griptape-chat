@@ -15,12 +15,6 @@ load_dotenv()
 port = os.getenv("GRADIO_PORT", 7860)
 
 lambda_endpoint = os.getenv("LAMBDA_ENDPOINT")
-
-# Store the state for the session (important for the lambda function)
-#if gr.State().value is None:
-    #resp = requests.post(lambda_endpoint, json={"operation": "create_session"})
-    # why isn't this storing properly? 
-    #gr.State(value = resp.json()["session_id"])
  
 def get_state():
     resp = requests.post(lambda_endpoint, json={"operation": "create_session"})
@@ -54,9 +48,9 @@ def bot(history):
 
 #demo = gr.ChatInterface(fn=chat.send_message, examples=["What did EDB release in Q2", "Why is Postgres better than Aurora"], title="Knowledge Base Search Bot")
 
-# Launch the chat interface
+# Launch the chat interface with session state
 demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
+# Launch the chat interface without session state
 #demo = gr.ChatInterface(fn=chat.send_message)
 demo.launch(share=True)
 
-#does state stuff have to be in here? 
