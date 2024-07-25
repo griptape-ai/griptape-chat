@@ -3,6 +3,7 @@ import time
 import gradio as gr
 import requests
 from dotenv import load_dotenv
+from uuid import uuid4 as uuid
 #from griptape.chat_demo import Chat
 from griptape.chat_cloud import Chat_Cloud, Chat_Local
 
@@ -50,7 +51,13 @@ def bot(history):
 
 # Launch the chat interface with session state
 demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
+
 # Launch the chat interface without session state
 #demo = gr.ChatInterface(fn=chat.send_message)
 demo.launch(share=True)
+
+# Destroy the file path for local conversation memory
+if os.path.exists("conversation_memory.json"):
+    os.remove("conversation_memory.json")
+    print("Conversation memory file removed.")
 

@@ -12,7 +12,7 @@ package-mode = false
 python = "^3.11"
 python-dotenv = "^1.0.0"
 gradio = "^4.37.1"
-griptape = {git = "https://github.com/griptape-ai/griptape", branch = "cjkindel/gtc_vector_store_driver"}
+griptape = {git = "https://github.com/griptape-ai/griptape", branch = "dev"}
 attrs = "^23.1.0"
 pypdf = "^4.2.0"
 pymupdf = "^1.24.7"

@@ -9,10 +9,11 @@ import urllib3 #Importing this for HTTP??
 
 from griptape.structures import Agent
 from griptape.rules import Rule
-from griptape.drivers import OpenAiChatPromptDriver, GriptapeCloudStructureRunDriver, LocalStructureRunDriver
+from griptape.drivers import OpenAiChatPromptDriver, GriptapeCloudStructureRunDriver, LocalStructureRunDriver, LocalConversationMemoryDriver
 from griptape.tools import VectorStoreClient
 from griptape.config import OpenAiStructureConfig
 from griptape.tasks import StructureRunTask
+from griptape.memory.structure import ConversationMemory
 
 #Load all environment variables 
 load_dotenv()
@@ -33,6 +34,10 @@ GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEED
 # Local agent (a little silly) that I defined to test the Gradio app
 def build_agent():
     return Agent(
+        conversation_memory=ConversationMemory(
+            driver=LocalConversationMemoryDriver(
+                file_path="conversation_memory.json"
+            )),
         rules=[
             Rule(
                 value = "You are very funny."
@@ -41,6 +46,7 @@ def build_agent():
                 value = "You end every response with 'haha'."
             )
         ]
+        
     )
 
 
@@ -85,7 +91,7 @@ class Chat_Local:
         )
     )
 
-    def send_message(self, message: str, history) -> Any:
+    def send_message(self, message: str, history,) -> Any:
         self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
 
