@@ -2,24 +2,16 @@ import os
 from attr import define, field, Factory
 from typing import Any
 from dotenv import load_dotenv
-import boto3
-from uuid import uuid4 as uuid
 import json
-import urllib3 #Importing this for HTTP?? 
 
 from griptape.structures import Agent
 from griptape.rules import Rule
-from griptape.drivers import OpenAiChatPromptDriver, GriptapeCloudStructureRunDriver, LocalStructureRunDriver, LocalConversationMemoryDriver
-from griptape.tools import VectorStoreClient
-from griptape.config import OpenAiStructureConfig
+from griptape.drivers import GriptapeCloudStructureRunDriver, LocalStructureRunDriver, LocalConversationMemoryDriver
 from griptape.tasks import StructureRunTask
 from griptape.memory.structure import ConversationMemory
 
 #Load all environment variables 
 load_dotenv()
-
-# Gets the lambda endpoint from the .env file
-#lambda_endpoint = os.environ["LAMBDA_ENDPOINT"]
 
 # Get host
 HOST = os.environ["GT_CLOUD_BASE_URL"]
@@ -31,7 +23,7 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
 
-# Local agent (a little silly) that I defined to test the Gradio app
+# Local agent 
 def build_agent():
     return Agent(
         conversation_memory=ConversationMemory(
@@ -40,18 +32,17 @@ def build_agent():
             )),
         rules=[
             Rule(
-                value = "You are very funny."
+                value = "You are an intelligent agent tasked with answering questions."
             ),
             Rule(
-                value = "You end every response with 'haha'."
+                value = "All of your responses are less than 5 sentences."
             )
         ]
         
     )
 
 
-# Used this class in order to run GriptapeCloud and Skatepark. (Skatepark with structures in GripMSRepo, GriptapeCloud with structures defined in cloud)
-# Need to make sure structure init is called. 
+# Class to run structures that run in a managed environment (Skatepark or GriptapeCloud)
 @define
 class Chat_Cloud:
     struct_run_task: StructureRunTask = field(
@@ -78,7 +69,7 @@ class Chat_Cloud:
             self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
     
-# Used this class in order to run the local agent that I defined above.
+# Used this class in order to run local agents.
 @define
 class Chat_Local:
     struct_run_task: StructureRunTask = field(
@@ -90,7 +81,6 @@ class Chat_Local:
             )
         )
     )
-
     def send_message(self, message: str, history,) -> Any:
         self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
