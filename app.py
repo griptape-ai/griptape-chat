@@ -13,7 +13,7 @@ load_dotenv()
 port = os.getenv("GRADIO_PORT", 7860)
 
 # Get the lambda endpoint from environment variables
-lambda_endpoint = os.getenv("LAMBDA_ENDPOINT")
+lambda_endpoint = os.getenv("LAMBDA_ENDPOINT", "")
  
 # Callable function to get the session id from the lambda endpoint
 def get_state():
@@ -43,14 +43,13 @@ def bot(history):
 
 chat = Chat_Cloud()
 demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
+demo.launch(share=True)
 
 # Launch the chat interface WITHOUT session state (Local Agent)
 
 #chat = Chat_Local()
 #demo = gr.ChatInterface(fn=chat.send_message)
-
-demo.launch(share=True)
-
+#demo.launch(share=True)
 # Destroy the file path for local conversation memory if used 
 if os.path.exists("conversation_memory.json"):
     os.remove("conversation_memory.json")
