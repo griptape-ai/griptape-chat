@@ -3,7 +3,7 @@ import time
 import gradio as gr
 import requests
 from dotenv import load_dotenv
-#from griptape.chat_demo import Chat
+from griptape.chat_demo import Chat
 from griptape.chat_cloud import Chat_Cloud, Chat_Local
 
 # Load the environment variables
@@ -15,7 +15,7 @@ port = os.getenv("GRADIO_PORT", 7860)
 # Get the lambda endpoint from environment variables
 lambda_endpoint = os.getenv("LAMBDA_ENDPOINT", "")
  
-# Callable function to get the session id from the lambda endpoint
+# Function to get the session id from the lambda endpoint
 def get_state():
     resp = requests.post(lambda_endpoint, json={"operation": "create_session"})
     session_id = resp.json()["session_id"]
@@ -40,16 +40,22 @@ def bot(history):
 
 
 # Launch the chat interface WITH session state (Managed Environment)
+#chat = Chat_Cloud()
+#demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
+#demo.launch(share=True)
 
-chat = Chat_Cloud()
-demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
-demo.launch(share=True)
-
-# Launch the chat interface WITHOUT session state (Local Agent)
+# Launch the chat interface locally WITHOUT Vector Store (Local Agent)
 
 #chat = Chat_Local()
 #demo = gr.ChatInterface(fn=chat.send_message)
 #demo.launch(share=True)
+
+# Launch the chat interface locally WITH Vector Store (Local Agent)
+
+chat = Chat()
+demo = gr.ChatInterface(fn=chat.send_message)
+demo.launch(share=True)
+
 # Destroy the file path for local conversation memory if used 
 if os.path.exists("conversation_memory.json"):
     os.remove("conversation_memory.json")

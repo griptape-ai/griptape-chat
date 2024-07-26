@@ -16,14 +16,14 @@ load_dotenv()
 # Get host
 HOST = os.environ["GT_CLOUD_BASE_URL"]
 
-# If with skatepark or with the cloud 
+# Get structure id if running in a managed state. 
 GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 
-# For the cloud 
+# Get Griptape API key if using the Griptape Cloud 
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
 
-# Local agent 
+# Simple local agent example with conversation memory. 
 def build_agent():
     return Agent(
         conversation_memory=ConversationMemory(
@@ -42,7 +42,7 @@ def build_agent():
     )
 
 
-# Class to run structures that run in a managed environment (Skatepark or GriptapeCloud)
+# Class to run structures that are in a managed environment (Skatepark or GriptapeCloud)
 @define
 class Chat_Cloud:
     struct_run_task: StructureRunTask = field(
@@ -69,7 +69,7 @@ class Chat_Cloud:
             self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
     
-# Used this class in order to run local agents.
+# Use this class in order to run local agents.
 @define
 class Chat_Local:
     struct_run_task: StructureRunTask = field(
