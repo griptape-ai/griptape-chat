@@ -12,7 +12,7 @@ load_dotenv()
 # Get the port from the environment variables for Gradio (default is 7860)
 port = os.getenv("GRADIO_PORT", 7860)
 
-# Get the lambda endpoint from environment variables
+# Get the lambda endpoint from environment variables if using CDK based memory
 lambda_endpoint = os.getenv("LAMBDA_ENDPOINT", "")
  
 # Function to get the session id from the lambda endpoint
@@ -36,25 +36,24 @@ def bot(history):
 
         yield history
 
+# Checks if environment variables are set for the Griptape Cloud or Azure
+if "GT_STRUCTURE_ID" in os.environ and os.environ["GT_STRUCTURE_ID"]:
+    # Launch the chat interface WITH session state (Managed Environment)
+    chat = Chat_Cloud()
+    demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
+    demo.launch(share=True)
+elif "AZURE_CLIENT_ID" in os.environ and os.environ["AZURE_CLIENT_ID"]:
+    # Launch the chat interface locally WITH Vector Store (Local Agent)
+    chat = Chat()
+    demo = gr.ChatInterface(fn=chat.send_message)
+    demo.launch(share=True)
+else:
+    # Launch the chat interface locally WITHOUT Vector Store (Local Agent)
+    chat = Chat_Local()
+    demo = gr.ChatInterface(fn=chat.send_message)
+    demo.launch(share=True)
 
 
-
-# Launch the chat interface WITH session state (Managed Environment)
-#chat = Chat_Cloud()
-#demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_state())])
-#demo.launch(share=True)
-
-# Launch the chat interface locally WITHOUT Vector Store (Local Agent)
-
-#chat = Chat_Local()
-#demo = gr.ChatInterface(fn=chat.send_message)
-#demo.launch(share=True)
-
-# Launch the chat interface locally WITH Vector Store (Local Agent)
-
-chat = Chat()
-demo = gr.ChatInterface(fn=chat.send_message)
-demo.launch(share=True)
 
 # Destroy the file path for local conversation memory if used 
 if os.path.exists("conversation_memory.json"):
