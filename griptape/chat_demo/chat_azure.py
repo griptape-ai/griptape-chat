@@ -43,7 +43,7 @@ azure_structure_config = AzureOpenAiStructureConfig(
 
     
 @define
-class Chat:
+class Chat_Azure:
     # Creates a ruleset for the structure 
     personality_ruleset = Ruleset(
         name="Personality",

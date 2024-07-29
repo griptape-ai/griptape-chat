@@ -1,5 +1,5 @@
-from .chat import Chat
+from .chat_azure import Chat_Azure
 
 __all__ = [
-    "Chat"
+    "Chat_Azure"
 ]

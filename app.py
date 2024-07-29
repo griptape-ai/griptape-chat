@@ -3,7 +3,7 @@ import time
 import gradio as gr
 import requests
 from dotenv import load_dotenv
-from griptape.chat_demo import Chat
+from griptape.chat_demo import Chat_Azure
 from griptape.chat_cloud import Chat_Cloud
 from griptape.chat_local import Chat_Local
 
@@ -39,26 +39,29 @@ def bot(history):
 
 # Checks if environment variables are set for the Griptape Cloud or Azure
 if "GT_STRUCTURE_ID" in os.environ and os.environ["GT_STRUCTURE_ID"]:
-    # Launch the chat interface WITH session state (Managed Environment)
+    # Launch the chat interface WITH session state in a managed environment. 
+    # This means that the CDK from https://github.com/griptape-ai/griptape-structure-chatbot has been deployed. 
+    # LAMBDA_ENDPOINT must be defined. 
     host = os.environ["GT_CLOUD_BASE_URL"]
     structure_id = os.environ["GT_STRUCTURE_ID"]
     api_key = os.environ["GT_CLOUD_API_KEY"]
     chat = Chat_Cloud(base_url=host,structure_id=structure_id,api_key=api_key)
-    #chat.__init__(base_url=host,structure_id=structure_id,api_key=api_key)
     demo = gr.ChatInterface(fn=chat.send_message, additional_inputs=[gr.State(value=get_session_id())])
     demo.launch(share=True)
-#elif "AZURE_CLIENT_ID" in os.environ and os.environ["AZURE_CLIENT_ID"]:
+elif "AZURE_CLIENT_ID" in os.environ and os.environ["AZURE_CLIENT_ID"]:
     # Launch the chat interface locally WITH Vector Store (Local Agent)
-    #chat = Chat()
-    #demo = gr.ChatInterface(fn=chat.send_message)
-    #demo.launch(share=True)
+    # This demo is ran locally, but uses the Azure Cloud for the AI model. 
+    # All Azure environment variables must be defined. 
+    chat = Chat_Azure()
+    demo = gr.ChatInterface(fn=chat.send_message)
+    demo.launch(share=True)
 else:
     # Launch the chat interface locally WITHOUT Vector Store (Local Agent)
+    # This just runs a simple local agent in chat_local.py.
+    # The only environment variable that must be defined is OPENAI_API_KEY.  
     chat = Chat_Local()
     demo = gr.ChatInterface(fn=chat.send_message)
     demo.launch(share=True)
-
-
 
 # Destroy the file path for local conversation memory if used 
 if os.path.exists("conversation_memory.json"):

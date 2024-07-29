@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "griptape-chat"
-version = "0.28.0"
+version = "0.28.2"
 description = "Chat demo using the Griptape Framework and Gradio."
 authors = ["Griptape <hello@griptape.ai>"]
 license = "Apache 2.0"
@@ -12,7 +12,7 @@ package-mode = false
 python = "^3.11"
 python-dotenv = "^1.0.0"
 gradio = "^4.37.1"
-griptape = "^0.28.0"
+griptape = "^0.28.2"
 attrs = "^23.1.0"
 pypdf = "^4.2.0"
 pymupdf = "^1.24.7"
