@@ -2,8 +2,6 @@ from azure.identity import ClientSecretCredential
 import os
 from attr import define
 from typing import Any
-from dotenv import load_dotenv
-import json
 from griptape.drivers import OpenAiChatPromptDriver
 from griptape.rules import Ruleset, Rule
 from griptape.structures import Agent
@@ -16,34 +14,39 @@ from griptape.drivers import BaseVectorStoreDriver, LocalConversationMemoryDrive
 from griptape.config import AzureOpenAiStructureConfig
 from griptape.tools import VectorStoreClient
 from griptape.memory.structure import ConversationMemory
-from griptape.tasks import StructureRunTask
-
-
-load_dotenv()
-
-# Creates the config/driver to interact with the OpenAI API
-config = OpenAiStructureConfig()
-config.prompt_driver = OpenAiChatPromptDriver(
-    model="gpt-4o",
-)
-
-azure_credential = ClientSecretCredential(
-    client_id=os.environ["AZURE_CLIENT_ID"],
-    client_secret=os.environ["AZURE_CLIENT_SECRET"],
-    tenant_id=os.environ["AZURE_TENANT_ID"],
-)
-
-azure_structure_config = AzureOpenAiStructureConfig(
-    azure_ad_token_provider=lambda: azure_credential.get_token(
-        "https://cognitiveservices.azure.com/.default"
-    ).token,
-    azure_endpoint=os.environ["AZURE_OPENAI_DEFAULT_ENDPOINT"],
-)
-
-
     
 @define
 class Chat_Azure:
+
+    def __init__(self, client_id:str, client_secret:str, tenant_id:str, azure_endpoint:str, knowledge_base_id:str, gt_cloud_api_key:str, gt_cloud_base_url:str):
+        config = OpenAiStructureConfig()
+        config.prompt_driver = OpenAiChatPromptDriver(
+            model="gpt-4o",
+        )
+
+        azure_credential = ClientSecretCredential(
+            client_id=client_id,
+            client_secret=client_secret,
+            tenant_id=tenant_id,
+        )
+
+        self.azure_structure_config = AzureOpenAiStructureConfig(
+            azure_ad_token_provider=lambda: azure_credential.get_token(
+                "https://cognitiveservices.azure.com/.default"
+            ).token,
+            azure_endpoint=azure_endpoint,
+        )
+        # Creates a driver to interact with the cloud knowledge base 
+        self.vector_store_driver = GriptapeCloudKnowledgeBaseVectorStoreDriver(
+            base_url=gt_cloud_base_url,
+            api_key=gt_cloud_api_key,
+            knowledge_base_id=knowledge_base_id,
+        )
+    
+    vector_store_driver = GriptapeCloudKnowledgeBaseVectorStoreDriver
+
+    azure_structure_config = AzureOpenAiStructureConfig
+
     # Creates a ruleset for the structure 
     personality_ruleset = Ruleset(
         name="Personality",
@@ -66,20 +69,6 @@ class Chat_Azure:
             Rule("Search the Vector Store Client tool with keywords, not complete sentences or questions."),
             Rule("Do not add terms to the search like product, details, or price"),
         ],
-    )
-
-    # Get the knowledge base id and cloud api key from the environment variables
-    knowledge_base_id = os.environ.get("KNOWLEDGE_BASE_ID")
-    gt_cloud_api_key = os.environ.get("GT_CLOUD_API_KEY")
-
-    # Takes cloud base url from the environment variable, if not found, defaults to the griptape cloud url
-    gt_cloud_base_url = os.environ.get("GT_CLOUD_BASE_URL", "https://cloud.griptape.ai")
-    
-    # Creates a driver to interact with the cloud knowledge base 
-    vector_store_driver = GriptapeCloudKnowledgeBaseVectorStoreDriver(
-        base_url=gt_cloud_base_url,
-        api_key=gt_cloud_api_key,
-        knowledge_base_id=knowledge_base_id,
     )
 
     # Output of the query, returns in the form of a ListArtifacts
@@ -113,3 +102,4 @@ class Chat_Azure:
     def send_message(self, message: str, history) -> Any:
         self.agent.input = (message,)
         return self.agent.run().value
+

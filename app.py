@@ -23,10 +23,13 @@ def get_session_id() -> str:
     session_id = resp.json()["session_id"]
     return session_id
 
-
+# Used for the Gradio ChatInterface. 
+# This adds the user message to the history and returns a tuple with an empty string and the history. 
 def user(user_message, history):
-    return "", history + [[user_message, None]]
+    history.append([user_message, None])
+    return ("", history)
 
+# Defines the history and yields it 
 def bot(history):
     response = chat.send_message(history[-1][0])
     history[-1][1] = ""
@@ -52,7 +55,16 @@ elif "AZURE_CLIENT_ID" in os.environ and os.environ["AZURE_CLIENT_ID"]:
     # Launch the chat interface locally WITH Vector Store (Local Agent)
     # This demo is ran locally, but uses the Azure Cloud for the AI model. 
     # All Azure environment variables must be defined. 
-    chat = Chat_Azure()
+    # Defines all environment variables 
+    client_id=os.environ["AZURE_CLIENT_ID"],
+    client_secret=os.environ["AZURE_CLIENT_SECRET"],
+    tenant_id=os.environ["AZURE_TENANT_ID"]
+    azure_endpoint=os.environ["AZURE_OPENAI_DEFAULT_ENDPOINT"]
+    knowledge_base_id = os.environ.get("KNOWLEDGE_BASE_ID")
+    gt_cloud_api_key = os.environ.get("GT_CLOUD_API_KEY")
+    gt_cloud_base_url = os.environ.get("GT_CLOUD_BASE_URL", "https://cloud.griptape.ai")
+    # Creates the chat
+    chat = Chat_Azure(client_id,client_secret,tenant_id,azure_endpoint, knowledge_base_id, gt_cloud_api_key, gt_cloud_base_url)
     demo = gr.ChatInterface(fn=chat.send_message)
     demo.launch(share=True)
 else:
