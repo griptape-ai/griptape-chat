@@ -1,62 +1,23 @@
-import os
 from attr import define, field, Factory
 from typing import Any
-from dotenv import load_dotenv
 import json
-
-from griptape.structures import Agent
-from griptape.rules import Rule
-from griptape.drivers import GriptapeCloudStructureRunDriver, LocalStructureRunDriver, LocalConversationMemoryDriver
+from griptape.drivers import GriptapeCloudStructureRunDriver
 from griptape.tasks import StructureRunTask
-from griptape.memory.structure import ConversationMemory
-
-#Load all environment variables 
-load_dotenv()
-
-# Get host
-HOST = os.environ["GT_CLOUD_BASE_URL"]
-
-# Get structure id if running in a managed state. 
-GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
-
-# Get Griptape API key if using the Griptape Cloud 
-GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY","GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
-
-
-# Simple local agent example with conversation memory. 
-def build_agent():
-    return Agent(
-        conversation_memory=ConversationMemory(
-            driver=LocalConversationMemoryDriver(
-                file_path="conversation_memory.json"
-            )),
-        rules=[
-            Rule(
-                value = "You are an intelligent agent tasked with answering questions."
-            ),
-            Rule(
-                value = "All of your responses are less than 5 sentences."
-            )
-        ]
-        
-    )
-
 
 # Class to run structures that are in a managed environment (Skatepark or GriptapeCloud)
 @define
-class Chat_Cloud:
-    struct_run_task: StructureRunTask = field(
-        default=Factory(
-            lambda: StructureRunTask(
-                driver=GriptapeCloudStructureRunDriver(
-                    base_url=HOST,
-                    structure_id=GT_STRUCTURE_ID,
-                    api_key=GT_API_KEY,
+class Chat_Cloud:    
+
+    struct_run_task: StructureRunTask
+
+    def __init__(self, base_url:str, structure_id:str, api_key:str):
+        self.struct_run_task = StructureRunTask(
+                    driver=GriptapeCloudStructureRunDriver(
+                        base_url=base_url,
+                        structure_id=structure_id,
+                        api_key=api_key,
+                    )
                 )
-            )
-        ),
-        kw_only=True,
-    )
 
     def send_message(self, message: str, history, session_id:str = None) -> Any:
         if session_id:
@@ -69,19 +30,5 @@ class Chat_Cloud:
             self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
     
-# Use this class in order to run local agents.
-@define
-class Chat_Local:
-    struct_run_task: StructureRunTask = field(
-        default=Factory(
-            lambda: StructureRunTask(
-                driver= LocalStructureRunDriver(
-                    structure_factory_fn = build_agent,
-                )
-            )
-        )
-    )
-    def send_message(self, message: str, history,) -> Any:
-        self.struct_run_task.input = (message,)
-        return self.struct_run_task.run().value
+
 

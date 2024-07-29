@@ -12,7 +12,7 @@ from griptape.config import OpenAiStructureConfig
 from griptape.artifacts import ListArtifact
 from griptape.rules import Rule, Ruleset
 from griptape.structures import Agent
-from griptape.drivers import BaseVectorStoreDriver, GriptapeCloudKnowledgeBaseVectorStoreDriver, LocalConversationMemoryDriver
+from griptape.drivers import BaseVectorStoreDriver, LocalConversationMemoryDriver, GriptapeCloudKnowledgeBaseVectorStoreDriver
 from griptape.config import AzureOpenAiStructureConfig
 from griptape.tools import VectorStoreClient
 from griptape.memory.structure import ConversationMemory

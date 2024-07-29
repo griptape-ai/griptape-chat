@@ -830,32 +830,34 @@ test = ["objgraph", "psutil"]
 
 [[package]]
 name = "griptape"
-version = "0.27.2"
+version = "0.28.2"
 description = "Modular Python framework for LLM workflows, tools, memory, and data."
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "griptape-0.28.2-py3-none-any.whl", hash = "sha256:be8108023f0474305b450dc5789746617fa4163127d181b9cea01006d5937926"},
+    {file = "griptape-0.28.2.tar.gz", hash = "sha256:7860ec9c908ff9d6c066da524009fdc12bebb513b04f36a40ec92bbba1920a23"},
+]
 
 [package.dependencies]
 attrs = ">=22"
-docker = "^7.1.0"
+docker = ">=7.1.0,<8.0.0"
 jinja2 = ">=3.1.3"
 marshmallow = ">=3"
 marshmallow-enum = ">=1.5"
 numpy = ">=1"
-openai = "^1.1.1"
+openai = ">=1.1.1,<2.0.0"
 pyyaml = ">=6"
-requests = "^2.32.0"
+requests = ">=2.32.0,<3.0.0"
 rich = ">=13"
 schema = ">=0.7"
-sqlalchemy = "~=1.0"
-stringcase = "^1.2.0"
+sqlalchemy = ">=1.0,<2.0"
+stringcase = ">=1.2.0,<2.0.0"
 tenacity = ">=8.0"
 tiktoken = ">=0.7"
 
 [package.extras]
-all = ["anthropic (>=0.29.0,<0.30.0)", "beautifulsoup4 (>=4.12.3,<5.0.0)", "boto3 (>=1.34.119,<2.0.0)", "cohere (>=5.5.4,<6.0.0)", "duckduckgo-search (>=6.1.6,<7.0.0)", "elevenlabs (>=1.1.2,<2.0.0)", "filetype (>=1.2,<2.0)", "google-generativeai (>=0.7.0,<0.8.0)", "mail-parser (>=3.15.0,<4.0.0)", "markdownify (>=0.11.6,<0.12.0)", "marqo (>=1.1.0)", "ollama (>=0.2.1,<0.3.0)", "opensearch-py (>=2.3.1,<3.0.0)", "pandas (>=1.3,<2.0)", "pgvector (>=0.2.3,<0.3.0)", "pillow (>=10.2.0,<11.0.0)", "pinecone-client (>=3,<4)", "playwright (>=1.42,<2.0)", "psycopg2-binary (>=2.9.9,<3.0.0)", "pusher (>=3.3.2,<4.0.0)", "pymongo", "pypdf (>=3.9,<4.0)", "qdrant-client (>=1.9.1)", "redis (>=4.6.0,<5.0.0)", "snowflake-sqlalchemy (>=1.4.7,<2.0.0)", "sqlalchemy-redshift", "torch (>=2.3.0,<3.0.0)", "trafilatura (>=1.6,<2.0)", "transformers (>=4.39.3,<5.0.0)", "voyageai (>=0.2.1,<0.3.0)"]
+all = ["anthropic (>=0.29.0,<0.30.0)", "beautifulsoup4 (>=4.12.3,<5.0.0)", "boto3 (>=1.34.119,<2.0.0)", "cohere (>=5.5.4,<6.0.0)", "duckduckgo-search (>=6.1.12,<7.0.0)", "elevenlabs (>=1.1.2,<2.0.0)", "filetype (>=1.2,<2.0)", "google-generativeai (>=0.7.0,<0.8.0)", "mail-parser (>=3.15.0,<4.0.0)", "markdownify (>=0.11.6,<0.12.0)", "marqo (>=1.1.0)", "ollama (>=0.2.1,<0.3.0)", "opensearch-py (>=2.3.1,<3.0.0)", "pandas (>=1.3,<2.0)", "pgvector (>=0.2.3,<0.3.0)", "pillow (>=10.2.0,<11.0.0)", "pinecone-client (>=3,<4)", "playwright (>=1.42,<2.0)", "psycopg2-binary (>=2.9.9,<3.0.0)", "pusher (>=3.3.2,<4.0.0)", "pymongo", "pypdf (>=3.9,<4.0)", "qdrant-client (>=1.9.1)", "redis (>=4.6.0,<5.0.0)", "snowflake-sqlalchemy (>=1.4.7,<2.0.0)", "sqlalchemy-redshift", "torch (>=2.3.0,<3.0.0)", "trafilatura (>=1.6,<2.0)", "transformers (>=4.39.3,<5.0.0)", "voyageai (>=0.2.1,<0.3.0)"]
 drivers-embedding-amazon-bedrock = ["boto3 (>=1.34.119,<2.0.0)"]
 drivers-embedding-amazon-sagemaker = ["boto3 (>=1.34.119,<2.0.0)"]
 drivers-embedding-cohere = ["cohere (>=5.5.4,<6.0.0)"]
@@ -889,18 +891,12 @@ drivers-vector-qdrant = ["qdrant-client (>=1.9.1)"]
 drivers-vector-redis = ["redis (>=4.6.0,<5.0.0)"]
 drivers-web-scraper-markdownify = ["beautifulsoup4 (>=4.12.3,<5.0.0)", "markdownify (>=0.11.6,<0.12.0)", "playwright (>=1.42,<2.0)"]
 drivers-web-scraper-trafilatura = ["trafilatura (>=1.6,<2.0)"]
-drivers-web-search-duckduckgo = ["duckduckgo-search (>=6.1.6,<7.0.0)"]
+drivers-web-search-duckduckgo = ["duckduckgo-search (>=6.1.12,<7.0.0)"]
 loaders-audio = ["filetype (>=1.2,<2.0)"]
 loaders-dataframe = ["pandas (>=1.3,<2.0)"]
 loaders-email = ["mail-parser (>=3.15.0,<4.0.0)"]
 loaders-image = ["pillow (>=10.2.0,<11.0.0)"]
 loaders-pdf = ["pypdf (>=3.9,<4.0)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/griptape-ai/griptape"
-reference = "cjkindel/gtc_vector_store_driver"
-resolved_reference = "80e0aa2227b0a11528804b44d4af03ad84566bdc"
 
 [[package]]
 name = "h11"
@@ -3134,4 +3130,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8e761f2c6a1017f63f8bc2546ffe7232e94b357ab13bfc7b9bc5568ea40ba1ff"
+content-hash = "0e9992ca1001fd9f8d92590912e9903ab152c37bd91ff8112541ea787852901b"

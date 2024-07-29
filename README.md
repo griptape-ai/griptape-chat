@@ -1,4 +1,7 @@
-# Griptape Chat Demo
+# Griptape Chat Demo 
+
+## Description
+This repository contains Python code using the [griptape](https://github.com/griptape-ai) framework that allows you to interact with a Griptape Structure through the [Gradio ChatInterFace](https://www.gradio.app/docs/gradio/chatinterface). 
 
 The demo uses [Gradio](https://www.gradio.app/) for the frontend and [Griptape](https://github.com/griptape-ai/griptape) for the backend.
 
@@ -9,7 +12,7 @@ cd griptape-chat
 ```
 
 ## Setting up the runtime environment
-Create file called .env in the root of this project directory and add the following content:
+Copy the .env.example into a .env in the root of this project directory and add the following content:
  ```shell
  OPENAI_API_KEY=your key here
  ```
@@ -27,8 +30,31 @@ Once you are logged in, click on the "Personal" text on the top right of your br
 1. Click on "+ Create new secret key" and give it a name.
 1. Copy the key and paste it in the .env file in the root directory of this project. Replacing "your key here" 
 
+### Cloud Based Conversation Memory
+Follow the link and follow the instructions in the README to set up the [Griptape-Structure-Chatbot](https://github.com/griptape-ai/griptape-structure-chatbot). 
+This will give you your
+```shell
+GT_STRUCTURE_ID=<your-structure-id>
+LAMBDA_ENPOINT=<your-lambda-endpoint>
+```
 
 ## Running the Demo
+
+If you would like to run the demo locally, then do not define these variables in your .env. 
+```shell
+    GT_STRUCTURE_ID=
+    GT_CLOUD_BASE_URL=
+    LAMBDA_ENDPOINT=
+    GT_CLOUD_API_KEY=
+```
+
+If you would like to run the demo in a managed environment, then you need to define these variables in your .env: 
+```shell
+GT_STRUCTURE_ID=<YourStructureID> 
+GT_CLOUD_BASE_URL=https://cloud.griptape.ai or http://127.0.0.1:5000
+LAMBDA_ENDPOINT=<YourLambdaEndpoint>
+GT_CLOUD_API_KEY=<YourCloudAPIKey>
+```
 
 ### via poetry
 ```shell
