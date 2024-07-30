@@ -10,8 +10,6 @@ from griptape.chat import Chat
 @define
 class Chat_Cloud(Chat):    
 
-    struct_run_task: StructureRunTask
-
     def __init__(self, base_url:str, structure_id:str, api_key:str):
         self.struct_run_task = StructureRunTask(
                     driver=GriptapeCloudStructureRunDriver(
