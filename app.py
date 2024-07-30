@@ -24,6 +24,7 @@ def get_session_id() -> str:
     return session_id
 
 # Used for the Gradio ChatInterface. 
+
 # Defines the history
 def bot(history):
     response = chat.send_message(history[-1][0])
