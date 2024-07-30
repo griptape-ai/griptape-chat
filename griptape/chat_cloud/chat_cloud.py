@@ -3,10 +3,12 @@ from typing import Any
 import json
 from griptape.drivers import GriptapeCloudStructureRunDriver
 from griptape.tasks import StructureRunTask
+from griptape.chat import Chat
+
 
 # Class to run structures that are in a managed environment (Skatepark or GriptapeCloud)
 @define
-class Chat_Cloud:    
+class Chat_Cloud(Chat):    
 
     struct_run_task: StructureRunTask
 

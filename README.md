@@ -1,7 +1,7 @@
 # Griptape Chat Demo 
 
 ## Description
-This repository contains Python code using the [griptape](https://github.com/griptape-ai) framework that allows you to interact with a Griptape Structure through the [Gradio ChatInterFace](https://www.gradio.app/docs/gradio/chatinterface). 
+This repository contains Python code using the [griptape](https://github.com/griptape-ai) framework that allows you to interact with a Griptape Structure through the [Gradio ChatInterface](https://www.gradio.app/docs/gradio/chatinterface). 
 
 The demo uses [Gradio](https://www.gradio.app/) for the frontend and [Griptape](https://github.com/griptape-ai/griptape) for the backend.
 

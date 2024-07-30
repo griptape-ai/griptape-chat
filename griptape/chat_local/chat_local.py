@@ -5,6 +5,7 @@ from griptape.rules import Rule
 from griptape.drivers import LocalStructureRunDriver, LocalConversationMemoryDriver
 from griptape.tasks import StructureRunTask
 from griptape.memory.structure import ConversationMemory
+from griptape.chat import Chat
 
 # Simple local agent example with conversation memory. 
 def build_agent():
@@ -26,7 +27,7 @@ def build_agent():
 
 # Use this class in order to run local agents with Local Conversation Memory.
 @define
-class Chat_Local:
+class Chat_Local(Chat):
     struct_run_task: StructureRunTask = field(
         default=Factory(
             lambda: StructureRunTask(
