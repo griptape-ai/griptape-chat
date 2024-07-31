@@ -27,7 +27,7 @@ class Chat_Cloud(Chat):
             }
             self.struct_run_task.input = [json.dumps(args)]
         else: 
-            self.struct_run_task.input = message
+            self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
     
 

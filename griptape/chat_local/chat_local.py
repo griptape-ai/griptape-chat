@@ -36,5 +36,5 @@ class Chat_Local(Chat):
             )
         )
     def send_message(self, message: str, history,) -> Any:
-        self.struct_run_task.input = message
+        self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value
