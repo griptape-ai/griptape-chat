@@ -35,6 +35,6 @@ class Chat_Local(Chat):
                 structure_factory_fn = build_agent,
             )
         )
-    def send_message(self, message: str, history,) -> Any:
+    def send_message(self, message: str, history, session_id=None) -> Any:
         self.struct_run_task.input = (message,)
         return self.struct_run_task.run().value

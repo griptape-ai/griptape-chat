@@ -31,8 +31,8 @@ Copy the .env.example into a .env in the root of this project directory and popu
 GRADIO_PORT=<your port here> to the .env file as well*
 
 ### Cloud Based Conversation Memory
-Follow the link and follow the instructions in the README to set up the [Griptape-Structure-Chatbot](https://github.com/griptape-ai/griptape-structure-chatbot). 
-This will give you your
+Follow the link and the instructions in the README to set up the [Griptape Structure Chatbot](https://github.com/griptape-ai/griptape-structure-chatbot) structure and CDK. 
+This will create your lambda endpoint and [Griptape Structure ID](https://cloud.griptape.ai/structures).
 ```shell
 GT_STRUCTURE_ID=<your-structure-id>
 LAMBDA_ENPOINT=<your-lambda-endpoint>
