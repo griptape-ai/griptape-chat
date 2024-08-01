@@ -52,7 +52,7 @@ else:
     chat = Chat_Local()
     demo = gr.ChatInterface(fn=chat.send_message)
 
-demo.launch(share=False)
+demo.launch(share=True)
 # Destroy the file path for local conversation memory if used 
 if os.path.exists("conversation_memory.json"):
     os.remove("conversation_memory.json")
