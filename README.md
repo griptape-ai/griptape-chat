@@ -40,7 +40,7 @@ LAMBDA_ENPOINT=<your-lambda-endpoint>
 
 ## Running the Demo
 
-If you would like to run the demo locally, then do NOT define these variables in your .env. 
+If you would like to run the demo locally, then COMMENT OUT these variables in your .env. 
 ```shell
     GT_STRUCTURE_ID=
     GT_CLOUD_BASE_URL=
