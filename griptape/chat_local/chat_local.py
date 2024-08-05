@@ -20,6 +20,9 @@ def build_agent():
             ),
             Rule(
                 value = "All of your responses are less than 5 sentences."
+            ),
+            Rule(
+                value= "You talk like a pirate."
             )
         ]
         
