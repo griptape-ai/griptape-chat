@@ -1,5 +1,3 @@
-from .chat_local import Chat_Local
+from .chat_local import ChatLocal
 
-__all__ = [
-    "Chat_Local"
-]
+__all__ = ["ChatLocal"]
