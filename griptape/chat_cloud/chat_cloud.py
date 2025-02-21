@@ -48,10 +48,16 @@ class ChatCloud(Chat):
     ) -> list[str]: ...
 
     def send_message(
-        self, message: str, history, conversation_memory_id: Optional[str] = None
+        self,
+        message: str,
+        history,
+        conversation_memory_id: Optional[str],
+        knowledge_base_id: Optional[str] = None,
+        ruleset_alias: Optional[str] = None,
     ) -> Any:
-
-        args = self.format_arguments(message, conversation_memory_id)
+        args = self.format_arguments(
+            message, conversation_memory_id, knowledge_base_id, ruleset_alias
+        )
 
         # Create StructureRun
         response = self._create_structure_run(args)

@@ -7,6 +7,8 @@ from griptape.chat_cloud import ChatAwsCloud
 from griptape.chat_cloud import ChatGTCloud
 from griptape.chat_local import ChatLocal
 
+from rich.pretty import pprint
+
 # Load the environment variables
 load_dotenv()
 
@@ -22,6 +24,39 @@ def get_session_id() -> str:
     resp = requests.post(lambda_endpoint, json={"operation": "create_session"})
     session_id = resp.json()["session_id"]
     return session_id
+
+
+# Function to get a list of knowledge bases from the Griptape Cloud API
+def get_knowledge_bases(base_url: str, api_key: str) -> list:
+    resp = requests.get(
+        f"{base_url}/api/knowledge-bases",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+    )
+    knowledge_bases = resp.json()["knowledge_bases"]
+    kb_list = []
+    for kb in knowledge_bases:
+        kb_list.append(kb["knowledge_base_id"])
+    return kb_list
+
+
+# Function to get rulessets from the Griptape Cloud API
+def get_rulesets(base_url: str, api_key: str) -> list:
+    resp = requests.get(
+        f"{base_url}/api/rulesets",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+    )
+    rulesets = resp.json()["rulesets"]
+    pprint(rulesets)
+    rs_list = []
+    for rs in rulesets:
+        rs_list.append(rs["alias"])
+    return rs_list
 
 
 # Function to get the thread id from the Griptape Cloud API
@@ -72,16 +107,32 @@ if "GT_STRUCTURE_ID" in os.environ and os.environ["GT_STRUCTURE_ID"]:
             additional_inputs=[gr.State(value=get_session_id())],
         )
     else:
+        print("Running with Griptape Cloud.")
         chat = ChatGTCloud(base_url=host, structure_id=structure_id, api_key=api_key)
+        knowledge_bases = get_knowledge_bases(host, api_key)
+        rulesets = get_rulesets(host, api_key)
         demo = gr.ChatInterface(
             fn=chat.send_message,
             title=get_title(),
-            additional_inputs=[gr.State(value=get_thread_id(host, api_key))],
+            additional_inputs=[
+                gr.State(value=get_thread_id(host, api_key)),
+                gr.Dropdown(
+                    choices=knowledge_bases,
+                    label="Knowledge Base",
+                    value=knowledge_bases[0],
+                ),
+                gr.Dropdown(
+                    choices=rulesets,
+                    label="Ruleset",
+                    value=rulesets[0],
+                ),
+            ],
         )
 else:
     # Launch the chat interface locally.
     # This just runs a simple local agent in chat_local.py.
     # The only environment variable that must be defined is OPENAI_API_KEY.
+    print("Running locally.")
     chat = ChatLocal()
     demo = gr.ChatInterface(fn=chat.send_message, title=get_title())
 

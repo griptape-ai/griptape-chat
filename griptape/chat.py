@@ -5,7 +5,6 @@ from griptape.tasks import StructureRunTask
 
 # Interface for the chat agents - local and cloud.
 class Chat(ABC):
-
     struct_run_task: StructureRunTask
 
     @abstractmethod
