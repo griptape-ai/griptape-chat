@@ -1,10 +1,12 @@
 import os
 import time
+from typing import List, Optional
 import gradio as gr
 import requests
 from dotenv import load_dotenv
 from griptape.chat_cloud import ChatAwsCloud
 from griptape.chat_cloud import ChatGTCloud
+from griptape.chat_cloud.chat_gt_cloud_assistant import ChatGTCloudAssistant
 from griptape.chat_local import ChatLocal
 
 # Load the environment variables
@@ -15,6 +17,15 @@ port = os.getenv("GRADIO_PORT", 7860)
 
 # Get the lambda endpoint from environment variables if using CDK based memory
 lambda_endpoint = os.getenv("LAMBDA_ENDPOINT", "")
+
+
+def get_headers(api_key: Optional[str] = None) -> dict:
+    headers = {
+        "Content-Type": "application/json",
+    }
+    if api_key and api_key != "":
+        headers["Authorization"] = f"Bearer {api_key}"
+    return headers
 
 
 # Function to get the session id from the lambda endpoint
@@ -29,13 +40,43 @@ def get_thread_id(base_url: str, api_key: str) -> str:
     resp = requests.post(
         f"{base_url}/api/threads",
         json={"name": "Griptape Chat Demo Thread"},
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
+        headers=get_headers(api_key),
     )
     thread_id = resp.json()["thread_id"]
     return thread_id
+
+
+def get_knowledge_base_options(base_url: str, api_key: str) -> List[tuple]:
+    resp = requests.get(
+        f"{base_url}/api/knowledge-bases",
+        headers=get_headers(api_key),
+    )
+    knowledge_base_ids = [
+        (kb["name"], kb["knowledge_base_id"]) for kb in resp.json()["knowledge_bases"]
+    ]
+    return knowledge_base_ids
+
+
+def get_ruleset_options(
+    base_url: str, api_key: str, use_alias: bool = False
+) -> List[tuple]:
+
+    ruleset_identifier = "alias" if use_alias else "ruleset_id"
+    resp = requests.get(
+        f"{base_url}/api/rulesets",
+        headers=get_headers(api_key),
+    )
+    ruleset_ids = [(r["name"], r[ruleset_identifier]) for r in resp.json()["rulesets"]]
+    return ruleset_ids
+
+
+def get_structures_options(base_url: str, api_key: str) -> List[tuple]:
+    resp = requests.get(
+        f"{base_url}/api/structures",
+        headers=get_headers(api_key),
+    )
+    structure_ids = [(s["name"], s["structure_id"]) for s in resp.json()["structures"]]
+    return structure_ids
 
 
 def get_title() -> str:
@@ -55,8 +96,46 @@ def bot(history):
         yield history
 
 
+if "GT_ASSISTANT_ID" in os.environ and os.environ["GT_ASSISTANT_ID"]:
+    host = os.environ["GT_CLOUD_BASE_URL"]
+    assistant_id = os.environ["GT_ASSISTANT_ID"]
+    api_key = os.environ["GT_CLOUD_API_KEY"]
+
+    knowledge_base_options = get_knowledge_base_options(host, api_key)
+    ruleset_options = get_ruleset_options(host, api_key)
+    structure_options = get_structures_options(host, api_key)
+
+    chat = ChatGTCloudAssistant(
+        base_url=host, api_key=api_key, assistant_id=assistant_id
+    )
+    demo = gr.ChatInterface(
+        fn=chat.send_message,
+        title="Griptape Assistant Chat Demo",
+        additional_inputs=[
+            gr.State(value=get_thread_id(host, api_key)),
+            gr.Dropdown(
+                choices=knowledge_base_options,
+                label="Knowledge Bases",
+                multiselect=True,
+                visible=True,
+            ),
+            gr.Dropdown(
+                choices=ruleset_options,
+                label="Rulesets",
+                multiselect=True,
+                visible=True,
+            ),
+            gr.Dropdown(
+                choices=structure_options,
+                label="Structures",
+                multiselect=True,
+                visible=True,
+            ),
+        ],
+    )
+
 # Checks if environment variables are set for the Griptape Cloud or Azure
-if "GT_STRUCTURE_ID" in os.environ and os.environ["GT_STRUCTURE_ID"]:
+elif "GT_STRUCTURE_ID" in os.environ and os.environ["GT_STRUCTURE_ID"]:
     # Launch the chat interface WITH session state in a managed environment.
     # This means that either:
     # 1. The Structure is making use of Griptape Cloud Threads for Memory
@@ -72,11 +151,27 @@ if "GT_STRUCTURE_ID" in os.environ and os.environ["GT_STRUCTURE_ID"]:
             additional_inputs=[gr.State(value=get_session_id())],
         )
     else:
+        knowledge_base_options = get_knowledge_base_options(host, api_key)
+        ruleset_options = get_ruleset_options(host, api_key, use_alias=True)
         chat = ChatGTCloud(base_url=host, structure_id=structure_id, api_key=api_key)
         demo = gr.ChatInterface(
             fn=chat.send_message,
             title=get_title(),
-            additional_inputs=[gr.State(value=get_thread_id(host, api_key))],
+            additional_inputs=[
+                gr.State(value=get_thread_id(host, api_key)),
+                gr.Dropdown(
+                    choices=knowledge_base_options,
+                    label="Knowledge Bases",
+                    multiselect=False,
+                    visible=True,
+                ),
+                gr.Dropdown(
+                    choices=ruleset_options,
+                    label="Rulesets",
+                    multiselect=False,
+                    visible=True,
+                ),
+            ],
         )
 else:
     # Launch the chat interface locally.
@@ -85,7 +180,7 @@ else:
     chat = ChatLocal()
     demo = gr.ChatInterface(fn=chat.send_message, title=get_title())
 
-demo.launch(share=True)
+demo.launch(share=False)
 # Destroy the file path for local conversation memory if used
 if os.path.exists("conversation_memory.json"):
     os.remove("conversation_memory.json")

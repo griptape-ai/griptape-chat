@@ -1,5 +1,5 @@
 from attr import define
-from typing import Optional
+from typing import List, Optional
 from griptape.chat_cloud.chat_cloud import ChatCloud
 
 
@@ -8,9 +8,18 @@ from griptape.chat_cloud.chat_cloud import ChatCloud
 class ChatGTCloud(ChatCloud):
 
     def format_arguments(
-        self, message: str, conversation_memory_id: Optional[str] = None
+        self,
+        message: str,
+        conversation_memory_id: Optional[str] = None,
+        additional_args: Optional[List[str]] = [],
     ) -> list[str]:
+        args: List[str] = []
         if conversation_memory_id:
-            return ["-p", message, "-t", conversation_memory_id, "-s"]
+            args = ["-p", message, "-t", conversation_memory_id, "-s"]
         else:
-            return ["-p", message, "-s"]
+            args = ["-p", message, "-s"]
+
+        if additional_args:
+            args.extend(additional_args)
+
+        return args
